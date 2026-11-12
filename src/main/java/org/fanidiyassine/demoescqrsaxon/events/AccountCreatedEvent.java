@@ -1,0 +1,14 @@
+package org.fanidiyassine.demoescqrsaxon.events;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.fanidiyassine.demoescqrsaxon.enums.AccountStatus;
+
+@Getter @AllArgsConstructor
+public class AccountCreatedEvent {
+    private String accountId;
+    private double initialBalance;
+    private AccountStatus accountStatus;
+    private String currency;
+
+}
