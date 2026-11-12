@@ -3,8 +3,9 @@ package org.fanidiyassine.demoescqrsaxon.commands.controllers;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.eventsourcing.eventstore.EventStore;
 import org.fanidiyassine.demoescqrsaxon.commands.commands.AddAccountCommand;
+import org.fanidiyassine.demoescqrsaxon.commands.commands.CreditAccountCommand;
 import org.fanidiyassine.demoescqrsaxon.commands.dtos.AddNewAccountRequestDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.fanidiyassine.demoescqrsaxon.commands.dtos.CreditAccountRequestDTO;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -27,6 +28,16 @@ public class AccountCommandController {
         CompletableFuture<String> response = commandGateway.send(new AddAccountCommand(
                 UUID.randomUUID().toString(),
                 request.initialBalance(),
+                request.currency()
+        ));
+        return  response;
+    }
+
+    @PostMapping("/credit")
+    public CompletableFuture<String> creditAccount(@RequestBody CreditAccountRequestDTO request){
+        CompletableFuture<String> response = commandGateway.send(new CreditAccountCommand(
+                request.accountId(),
+                request.amount(),
                 request.currency()
         ));
         return  response;
