@@ -5,9 +5,11 @@ import org.axonframework.eventsourcing.eventstore.EventStore;
 import org.fanidiyassine.demoescqrsaxon.commands.commands.AddAccountCommand;
 import org.fanidiyassine.demoescqrsaxon.commands.commands.CreditAccountCommand;
 import org.fanidiyassine.demoescqrsaxon.commands.commands.DebitAccountCommand;
+import org.fanidiyassine.demoescqrsaxon.commands.commands.UpdateAccountStatusCommand;
 import org.fanidiyassine.demoescqrsaxon.commands.dtos.AddNewAccountRequestDTO;
 import org.fanidiyassine.demoescqrsaxon.commands.dtos.CreditAccountRequestDTO;
 import org.fanidiyassine.demoescqrsaxon.commands.dtos.DebitAccountRequestDTO;
+import org.fanidiyassine.demoescqrsaxon.commands.dtos.UpdateAccountStatusRequestDTO;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -51,6 +53,15 @@ public class AccountCommandController {
                 request.accountId(),
                 request.amount(),
                 request.currency()
+        ));
+        return  response;
+    }
+
+    @PutMapping("/updateStatus")
+    public CompletableFuture<String> updateAccountStatus(@RequestBody UpdateAccountStatusRequestDTO request){
+        CompletableFuture<String> response = commandGateway.send(new UpdateAccountStatusCommand(
+                request.accountId(),
+                request.accountStatus()
         ));
         return  response;
     }

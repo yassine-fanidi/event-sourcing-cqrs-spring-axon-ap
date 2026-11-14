@@ -9,11 +9,9 @@ import org.axonframework.spring.stereotype.Aggregate;
 import org.fanidiyassine.demoescqrsaxon.commands.commands.AddAccountCommand;
 import org.fanidiyassine.demoescqrsaxon.commands.commands.CreditAccountCommand;
 import org.fanidiyassine.demoescqrsaxon.commands.commands.DebitAccountCommand;
+import org.fanidiyassine.demoescqrsaxon.commands.commands.UpdateAccountStatusCommand;
 import org.fanidiyassine.demoescqrsaxon.enums.AccountStatus;
-import org.fanidiyassine.demoescqrsaxon.events.AccountActivitedEvent;
-import org.fanidiyassine.demoescqrsaxon.events.AccountCreatedEvent;
-import org.fanidiyassine.demoescqrsaxon.events.AccountCreditedEvent;
-import org.fanidiyassine.demoescqrsaxon.events.AccountDebitedEvent;
+import org.fanidiyassine.demoescqrsaxon.events.*;
 
 @Aggregate
 @Slf4j
@@ -64,7 +62,7 @@ public class AccountAggregate {
         log.info("################# Received CreditAccountCommand #################");
         //Fonction de décision
         //Régle Metier
-        if(!status.equals(AccountStatus.ACTIVATED)) throw new RuntimeException("The account "+command.getId()+"is not activated.");
+        if(!status.equals(AccountStatus.ACTIVATED)) throw new RuntimeException("The account "+command.getId()+" is not activated.");
         if(command.getAmount()<=0){
             throw new IllegalArgumentException("Amount must be greater than 0.");
         }
@@ -87,7 +85,7 @@ public class AccountAggregate {
         log.info("################# Received CreditAccountCommand #################");
         //Fonction de décision
         //Régle Metier
-        if(!status.equals(AccountStatus.ACTIVATED)) throw new RuntimeException("The account "+command.getId()+"is not activated.");
+        if(!status.equals(AccountStatus.ACTIVATED)) throw new RuntimeException("The account "+command.getId()+" is not activated.");
         if(balance < command.getAmount()) throw new RuntimeException("Balance Not Enough.");
         if(command.getAmount()<=0){
             throw new IllegalArgumentException("Amount must be greater than 0.");
@@ -104,5 +102,23 @@ public class AccountAggregate {
         log.info("################# AccountDebitedEvent occured #################");
 //        this.accountId = event.getAccountId();
         this.balance -= event.getAmount();
+    }
+    @CommandHandler
+    public void handle(UpdateAccountStatusCommand command){
+        log.info("################# Received UpdateAccountStatusCommand #################");
+        //Fonction de décision
+        //Régle Metier
+        if(command.getStatus() == status) throw new RuntimeException("The account "+command.getId()+" is already "+this.status);
+        AggregateLifecycle.apply(new AccountStatusUpdatedEvent(
+                command.getId(),
+                command.getStatus()
+        ));
+    }
+
+    @EventSourcingHandler
+    public void on(AccountStatusUpdatedEvent event){
+        log.info("################# AccountStatusUpdatedEvent occured #################");
+//        this.accountId = event.getAccountId();
+        this.status = event.getStatus();
     }
 }
