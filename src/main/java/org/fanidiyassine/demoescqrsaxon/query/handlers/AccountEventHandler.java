@@ -3,6 +3,7 @@ package org.fanidiyassine.demoescqrsaxon.query.handlers;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.EventMessage;
+import org.axonframework.queryhandling.QueryUpdateEmitter;
 import org.fanidiyassine.demoescqrsaxon.enums.OperationType;
 import org.fanidiyassine.demoescqrsaxon.events.*;
 import org.fanidiyassine.demoescqrsaxon.query.entities.Account;
@@ -16,10 +17,12 @@ import org.springframework.stereotype.Component;
 public class AccountEventHandler {
     private AccountRepository accountRepository;
     private OperationRepository operationRepository;
+    private QueryUpdateEmitter queryUpdateEmitter;
 
-    public AccountEventHandler(AccountRepository accountRepository, OperationRepository operationRepository) {
+    public AccountEventHandler(AccountRepository accountRepository, OperationRepository operationRepository, QueryUpdateEmitter queryUpdateEmitter) {
         this.accountRepository = accountRepository;
         this.operationRepository = operationRepository;
+        this.queryUpdateEmitter = queryUpdateEmitter;
     }
 
     @EventHandler //Subscribe chez l'event Bus
@@ -53,9 +56,10 @@ public class AccountEventHandler {
                 .account(account)
                 .build();
 //        account.setBalance(account.getBalance() + event.getAmount());
-        account.setBalance(account.getBalance() - accountOperation.getAmount());
+        account.setBalance(account.getBalance() + accountOperation.getAmount());
         operationRepository.save(accountOperation);
         accountRepository.save(account);
+        queryUpdateEmitter.emit(e->true, accountOperation);
     }
     @EventHandler //Subscribe chez l'event Bus
     public void on(AccountDebitedEvent event, EventMessage eventMessage) {
@@ -72,6 +76,7 @@ public class AccountEventHandler {
 //        account.setBalance(account.getBalance() - accountOperation.getAmount());
         operationRepository.save(accountOperation);
         accountRepository.save(account);
+        queryUpdateEmitter.emit(e->true, accountOperation);
     }
     @EventHandler //Subscribe chez l'event Bus
     public void on(AccountStatusUpdatedEvent event) {

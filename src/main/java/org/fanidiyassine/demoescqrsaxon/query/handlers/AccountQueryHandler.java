@@ -6,6 +6,7 @@ import org.fanidiyassine.demoescqrsaxon.query.entities.Account;
 import org.fanidiyassine.demoescqrsaxon.query.entities.AccountOperation;
 import org.fanidiyassine.demoescqrsaxon.query.queries.GetAccountStatementQuery;
 import org.fanidiyassine.demoescqrsaxon.query.queries.GetAllAccountsQuery;
+import org.fanidiyassine.demoescqrsaxon.query.queries.WatchEventQuery;
 import org.fanidiyassine.demoescqrsaxon.query.repositories.AccountRepository;
 import org.fanidiyassine.demoescqrsaxon.query.repositories.OperationRepository;
 import org.springframework.stereotype.Component;
@@ -32,5 +33,10 @@ public class AccountQueryHandler {
         Account account = accountRepository.findById(query.getAccountId()).get();
         List<AccountOperation> operations = operationRepository.findByAccountId(query.getAccountId());
         return new AccountStatementResponseDTO(account, operations);
+    }
+
+    @QueryHandler
+    public AccountOperation on(WatchEventQuery watchEventQuery) {
+        return AccountOperation.builder().build(); //Résultat initial du flux
     }
 }
