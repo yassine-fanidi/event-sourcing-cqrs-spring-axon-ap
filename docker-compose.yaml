@@ -1,4 +1,14 @@
 services:
+  axonserver:
+    image: 'axoniq/axonserver:latest'
+    hostname: axonserver
+    environment:
+#      - 'AXONIQ_AXONSERVER_STANDALONE=TRUE'
+#      - 'AXONIQ_AXONSERVER_NAME=axonserver'
+      - 'AXONIQ_PLATFORM_AUTHENTICATION=${AXON_SERVER_AUTH}'
+    ports:
+      - '8024:8024'
+      - '8124:8124'
   postgres:
     image: 'postgres:17'
     environment:
