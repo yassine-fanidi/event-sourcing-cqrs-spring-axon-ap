@@ -17,7 +17,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 @RestController
-@RequestMapping("/commands/accounts")
+@RequestMapping("/command/accounts")
 public class AccountCommandController {
     private CommandGateway commandGateway;
     private EventStore eventStore;
