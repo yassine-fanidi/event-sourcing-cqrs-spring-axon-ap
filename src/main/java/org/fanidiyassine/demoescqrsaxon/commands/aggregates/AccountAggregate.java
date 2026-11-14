@@ -8,10 +8,12 @@ import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.fanidiyassine.demoescqrsaxon.commands.commands.AddAccountCommand;
 import org.fanidiyassine.demoescqrsaxon.commands.commands.CreditAccountCommand;
+import org.fanidiyassine.demoescqrsaxon.commands.commands.DebitAccountCommand;
 import org.fanidiyassine.demoescqrsaxon.enums.AccountStatus;
 import org.fanidiyassine.demoescqrsaxon.events.AccountActivitedEvent;
 import org.fanidiyassine.demoescqrsaxon.events.AccountCreatedEvent;
 import org.fanidiyassine.demoescqrsaxon.events.AccountCreditedEvent;
+import org.fanidiyassine.demoescqrsaxon.events.AccountDebitedEvent;
 
 @Aggregate
 @Slf4j
@@ -53,7 +55,7 @@ public class AccountAggregate {
     @EventSourcingHandler
     public void on(AccountActivitedEvent event){
         log.info("################# AccountActivitedEvent occured #################");
-        this.accountId = event.getAccountId();
+//        this.accountId = event.getAccountId();
         this.status = event.getAccountStatus();
     }
 
@@ -64,7 +66,7 @@ public class AccountAggregate {
         //Régle Metier
         if(!status.equals(AccountStatus.ACTIVATED)) throw new RuntimeException("The account "+command.getId()+"is not activated.");
         if(command.getAmount()<=0){
-            throw new IllegalArgumentException("Initial Balance must be greater than 0.");
+            throw new IllegalArgumentException("Amount must be greater than 0.");
         }
         AggregateLifecycle.apply(new AccountCreditedEvent(
                 command.getId(),
@@ -76,7 +78,31 @@ public class AccountAggregate {
     @EventSourcingHandler
     public void on(AccountCreditedEvent event){
         log.info("################# AccountCreditedEvent occured #################");
-        this.accountId = event.getAccountId();
+//        this.accountId = event.getAccountId();
         this.balance += event.getAmount();
+    }
+
+    @CommandHandler
+    public void handle(DebitAccountCommand command){
+        log.info("################# Received CreditAccountCommand #################");
+        //Fonction de décision
+        //Régle Metier
+        if(!status.equals(AccountStatus.ACTIVATED)) throw new RuntimeException("The account "+command.getId()+"is not activated.");
+        if(balance < command.getAmount()) throw new RuntimeException("Balance Not Enough.");
+        if(command.getAmount()<=0){
+            throw new IllegalArgumentException("Amount must be greater than 0.");
+        }
+        AggregateLifecycle.apply(new AccountDebitedEvent(
+                command.getId(),
+                command.getAmount(),
+                command.getCurrency()
+        ));
+    }
+
+    @EventSourcingHandler
+    public void on(AccountDebitedEvent event){
+        log.info("################# AccountDebitedEvent occured #################");
+//        this.accountId = event.getAccountId();
+        this.balance -= event.getAmount();
     }
 }
