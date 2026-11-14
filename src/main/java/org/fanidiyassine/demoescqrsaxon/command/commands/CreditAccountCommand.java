@@ -1,4 +1,4 @@
-package org.fanidiyassine.demoescqrsaxon.commands.commands;
+package org.fanidiyassine.demoescqrsaxon.command.commands;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

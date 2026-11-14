@@ -1,4 +1,4 @@
-package org.fanidiyassine.demoescqrsaxon.commands.aggregates;
+package org.fanidiyassine.demoescqrsaxon.command.aggregates;
 
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
@@ -6,10 +6,10 @@ import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
-import org.fanidiyassine.demoescqrsaxon.commands.commands.AddAccountCommand;
-import org.fanidiyassine.demoescqrsaxon.commands.commands.CreditAccountCommand;
-import org.fanidiyassine.demoescqrsaxon.commands.commands.DebitAccountCommand;
-import org.fanidiyassine.demoescqrsaxon.commands.commands.UpdateAccountStatusCommand;
+import org.fanidiyassine.demoescqrsaxon.command.commands.AddAccountCommand;
+import org.fanidiyassine.demoescqrsaxon.command.commands.CreditAccountCommand;
+import org.fanidiyassine.demoescqrsaxon.command.commands.DebitAccountCommand;
+import org.fanidiyassine.demoescqrsaxon.command.commands.UpdateAccountStatusCommand;
 import org.fanidiyassine.demoescqrsaxon.enums.AccountStatus;
 import org.fanidiyassine.demoescqrsaxon.events.*;
 

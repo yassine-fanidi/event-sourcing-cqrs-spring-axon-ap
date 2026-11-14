@@ -1,4 +1,4 @@
-package org.fanidiyassine.demoescqrsaxon.commands.dtos;
+package org.fanidiyassine.demoescqrsaxon.command.dtos;
 
 import org.fanidiyassine.demoescqrsaxon.enums.AccountStatus;
 

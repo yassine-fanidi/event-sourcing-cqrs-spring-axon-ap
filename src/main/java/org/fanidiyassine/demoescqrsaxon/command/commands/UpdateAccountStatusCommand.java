@@ -1,13 +1,13 @@
-package org.fanidiyassine.demoescqrsaxon.commands.commands;
+package org.fanidiyassine.demoescqrsaxon.command.commands;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
+import org.fanidiyassine.demoescqrsaxon.enums.AccountStatus;
 
 @Getter @AllArgsConstructor
-public class DebitAccountCommand {
+public class UpdateAccountStatusCommand {
     @TargetAggregateIdentifier
     private String id;
-    private double amount;
-    private String currency;
+    private AccountStatus status;
 }
